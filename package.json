@@ -1,55 +1,62 @@
-{
-  "name": "mineflayer",
-  "version": "4.37.1",
-  "description": "create minecraft bots with a stable, high level API",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "mocha_test": "mocha --reporter spec --exit",
-    "test": "npm run mocha_test",
-    "pretest": "npm run lint",
-    "lint": "standard && standard-markdown",
-    "fix": "standard --fix && standard-markdown --fix",
-    "prepublishOnly": "cp docs/README.md README.md"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/PrismarineJS/mineflayer.git"
-  },
-  "engines": {
-    "node": ">=22"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "minecraft-data": "^3.108.0",
-    "minecraft-protocol": "^1.66.0",
-    "mojangson": "^2.0.4",
-    "prismarine-biome": "^1.1.1",
-    "prismarine-block": "^1.22.0",
-    "prismarine-chat": "^1.7.1",
-    "prismarine-chunk": "^1.39.0",
-    "prismarine-entity": "^2.5.0",
-    "prismarine-item": "^1.17.0",
-    "prismarine-nbt": "^2.0.0",
-    "prismarine-physics": "^1.9.0",
-    "prismarine-recipe": "^1.5.0",
-    "prismarine-registry": "^1.10.0",
-    "prismarine-windows": "^2.9.0",
-    "prismarine-world": "^3.6.0",
-    "protodef": "^1.18.0",
-    "typed-emitter": "^1.0.0",
-    "uuid-1345": "^1.0.2",
-    "vec3": "^0.1.7"
-  },
-  "devDependencies": {
-    "@types/node": "^25.2.1",
-    "doctoc": "^2.0.1",
-    "minecraft-wrap": "^1.3.0",
-    "mineflayer": "file:",
-    "mocha": "^11.0.1",
-    "protodef-yaml": "^1.5.3",
-    "standard": "^17.0.0",
-    "standard-markdown": "^7.1.0",
-    "typescript": "^5.4.5"
-  }
+const mineflayer = require('mineflayer')
+
+const config = {
+    host: 'hpdvc.aternos.me', // IP server
+    port: 14709,              // Port
+    username: 'AFK_Bot',      // Tên bot (server offline)
+    // auth: 'offline'         // Thêm nếu server là offline/cracked
+    // auth: 'microsoft'       // Nếu dùng tài khoản Microsoft
 }
+
+let bot
+
+function createBot() {
+
+    bot = mineflayer.createBot(config)
+
+    bot.once('spawn', () => {
+    console.log('✅ Bot đã vào server!')
+
+    // Gửi lời chào (tùy chọn)
+    setTimeout(() => {
+        bot.chat('Xin chào!')
+    }, 2000)
+
+    console.log("🤖 Bắt đầu nhảy định kỳ")
+
+    // Nhảy mỗi 30 giây
+    setInterval(() => {
+
+        bot.setControlState('jump', true)
+
+        setTimeout(() => {
+            bot.setControlState('jump', false)
+        }, 500)
+
+    }, 30000)
+})
+
+    bot.on('chat', (username, message) => {
+        if (username === bot.username) return
+
+        console.log(`[CHAT] ${username}: ${message}`)
+    })
+
+    bot.on('kicked', (reason) => {
+        console.log('❌ Bị kick:')
+        console.log(reason)
+    })
+
+    bot.on('error', (err) => {
+        console.log('Lỗi:', err.message)
+    })
+
+    bot.on('end', () => {
+        console.log('🔄 Mất kết nối...')
+        console.log('⏳ Kết nối lại sau 5 giây')
+
+        setTimeout(createBot, 5000)
+    })
+}
+
+createBot()

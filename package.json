@@ -21,7 +21,7 @@ function startBot() {
     bot.once('spawn', () => {
 
         console.log('=================================')
-        console.log('✅ Bot đã vào server!')
+        console.log(' Bot đã vào server!')
         console.log('=================================')
 
         // Nếu server dùng AuthMe thì bỏ // ở dòng dưới
@@ -39,7 +39,7 @@ function startBot() {
 
         antiAfk = setInterval(() => {
 
-            console.log('🤖 Anti AFK')
+            console.log(' Anti AFK')
 
             // Nhảy
             bot.setControlState('jump', true)
@@ -68,22 +68,22 @@ function startBot() {
     })
 
     bot.on('kicked', reason => {
-        console.log('❌ Bị kick:')
+        console.log(' Bị kick:')
         console.log(reason)
     })
 
     bot.on('error', err => {
-        console.log('❌ Lỗi:', err.message)
+        console.log(' Lỗi:', err.message)
     })
 
     bot.on('end', () => {
 
-        console.log('🔄 Mất kết nối')
-        console.log('⏳ Kết nối lại sau 5 giây...')
+        console.log(' Mất kết nối')
+        console.log(' Kết nối lại sau 5 giây...')
 
         if (antiAfk) {
             clearInterval(antiAfk)
-            antiAfk = null
+            antiAfk = 9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
         }
 
         setTimeout(startBot, 5000)

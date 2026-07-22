@@ -4,38 +4,29 @@ const config = {
     host: 'hpdvc.aternos.me', // IP server
     port: 14709,              // Port
     username: 'AFK_Bot',      // Tên bot (server offline)
-    // auth: 'offline'         // Thêm nếu server là offline/cracked
+    // auth: 'online'         // Thêm nếu server là offline/cracked
     // auth: 'microsoft'       // Nếu dùng tài khoản Microsoft
 }
 
-let bot
+let antiAfk = null;
 
-function createBot() {
+bot.once('spawn', () => {
 
-    bot = mineflayer.createBot(config)
+    console.log('✅ Bot đã vào server!');
 
-    bot.once('spawn', () => {
-    console.log('✅ Bot đã vào server!')
+    if (antiAfk) clearInterval(antiAfk);
 
-    // Gửi lời chào (tùy chọn)
-    setTimeout(() => {
-        bot.chat('Xin chào!')
-    }, 2000)
+    antiAfk = setInterval(() => {
 
-    console.log("🤖 Bắt đầu nhảy định kỳ")
-
-    // Nhảy mỗi 30 giây
-    setInterval(() => {
-
-        bot.setControlState('jump', true)
+        bot.setControlState('jump', true);
 
         setTimeout(() => {
-            bot.setControlState('jump', false)
-        }, 500)
+            bot.setControlState('jump', false);
+        }, 500);
 
-    }, 30000)
-})
+    }, 30000);
 
+});
     bot.on('chat', (username, message) => {
         if (username === bot.username) return
 
